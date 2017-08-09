@@ -26,7 +26,7 @@ test  <- cbind(subject_test,  y_test,  x_test)
 merged <- rbind(test, train)
 
 # tidy up column names
-cnames <- make.names(c(c("subject", "training"), as.character(features$V2)), unique = TRUE)  # make names unique
+cnames <- make.names(c(c("subject", "activity"), as.character(features$V2)), unique = TRUE)  # make names unique
 cnames <- gsub("[\\.]+", "\\.", cnames)                                                      # replace multiple dots with one
 cnames <- gsub("\\.$", "", cnames)                                                           # remove dot at end of line
 cnames <- gsub("([A-Z])", "\\.\\1", cnames)                                                  # put a dot in front of capital letter
@@ -40,13 +40,13 @@ cnames <- tolower(cnames)                                                       
 names(merged) <- cnames
 
 # select only columns subject, training and those containing either mean or std
-tidy <- select(merged, subject, training, matches("\\.(mean|std)(\\.|$)"))
+tidy <- select(merged, subject, activity, matches("\\.(mean|std)(\\.|$)"))
 
 # replace training ids with label
-tidy$training <- activities$V2[tidy$training]
+tidy$activity <- activities$V2[tidy$activity]
 
 # compute means of all columns by subject and training
-tidy_summary <- summarise_all(group_by(tidy, subject, training), mean)
+tidy_summary <- summarise_all(group_by(tidy, subject, activity), mean)
 
 # output tidy_summary data.table as TXT file without row names
 write.table(tidy_summary, "tidy_summary.txt", row.names = FALSE)
